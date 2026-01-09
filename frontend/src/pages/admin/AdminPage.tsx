@@ -14,12 +14,7 @@ const AdminPage = () => {
   const {
     fetchSongs,
     fetchAlbums,
-    fetchStats,
-    songs,
-    albums,
-    isLoading,
-    isSongsLoading,
-    isStatsLoading,
+    fetchStats, 
   } = useMusicStore();
 
   useEffect(() => {
