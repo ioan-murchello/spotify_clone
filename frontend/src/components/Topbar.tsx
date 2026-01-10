@@ -17,7 +17,7 @@ const Topbar = () => {
     >
       <Link to={'/'} className="flex gap-2 items-center">
         <img src="/spotify.png" className="size-8" alt="Spotify logo" />
-        Spotify
+        <span className="hidden sm:inline">Spotify</span>
       </Link>
       <div className="flex items-center gap-4">
         {isAdmin && (

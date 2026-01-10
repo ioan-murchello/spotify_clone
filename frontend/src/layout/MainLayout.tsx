@@ -45,7 +45,7 @@ const MainLayout = () => {
         <ResizableHandle className="w-2 bg-black rounded-lg transition-colors" />
 
         {/* Main content */}
-        <ResizablePanel defaultSize={isMobile ? 80 : 60}>
+        <ResizablePanel defaultSize={60}>
           <Outlet />
         </ResizablePanel>
 
