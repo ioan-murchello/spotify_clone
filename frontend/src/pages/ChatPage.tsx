@@ -1,4 +1,3 @@
-import Topbar from "@/components/Topbar";
 import { useChatStore } from "@/stores/useChatStore";
 import { useUser } from "@clerk/clerk-react";
 import { useEffect, useRef } from "react";
