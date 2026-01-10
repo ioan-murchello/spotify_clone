@@ -103,7 +103,7 @@ const PlaybackControls = () => {
             <Button
               size="icon"
               variant="ghost"
-              className="hidden sm:inline-flex hover:text-white text-zinc-400"
+              className="sm:inline-flex hover:text-white text-zinc-400"
               onClick={toggleRandomPlay}
             >
               <Shuffle
@@ -145,7 +145,7 @@ const PlaybackControls = () => {
             <Button
               size="icon"
               variant="ghost"
-              className="hidden sm:inline-flex hover:text-white text-zinc-400"
+              className=" sm:inline-flex hover:text-white text-zinc-400"
               onClick={repeatSong}
             >
               <Repeat
@@ -154,8 +154,8 @@ const PlaybackControls = () => {
             </Button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 w-full">
-            <div className="text-xs text-zinc-400">
+          <div className="sm:flex items-center gap-2 w-full sm:p-3">
+            <div className="hidden sm:inline-block text-xs text-zinc-400">
               {formatTime(currentTime)}
             </div>
             <Slider
@@ -165,33 +165,13 @@ const PlaybackControls = () => {
               className="w-full hover:cursor-grab active:cursor-grabbing "
               onValueChange={handleSeek}
             />
-            <div className="text-xs text-zinc-400">{formatTime(duration)}</div>
+            <div className="hidden sm:inline-block text-xs text-zinc-400">
+              {formatTime(duration)}
+            </div>
           </div>
         </div>
         {/* volume controls */}
         <div className="hidden sm:flex items-center gap-4 min-w-[180px] w-[30%] justify-end">
-          <Button
-            size="icon"
-            variant="ghost"
-            className="hover:text-white text-zinc-400"
-          >
-            <Mic2 className="h-4 w-4" />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="hover:text-white text-zinc-400"
-          >
-            <ListMusic className="h-4 w-4" />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="hover:text-white text-zinc-400"
-          >
-            <Laptop2 className="h-4 w-4" />
-          </Button>
-
           <div className="flex items-center gap-2">
             <Button
               size="icon"

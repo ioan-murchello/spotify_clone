@@ -13,7 +13,7 @@ const LeftSidebar = () => {
   }, [fetchAlbums]);
 
   return (
-    <aside className="h-full flex flex-col gap-3 ">
+    <aside className="h-full flex flex-col gap-3">
       <div className="flex flex-col items-start gap-2">
         <Link
           to="/"
@@ -36,7 +36,7 @@ const LeftSidebar = () => {
       <div className="flex flex-col items-start gap-2  rounded-xl">
         <div className="flex items-center justify-start p-4">
           <Library className="size-5 mr-2" />
-          <span className="hidden md:inline">Playlists</span>
+          <span className="hidden md:inline">Albums</span>
         </div>
         <ScrollArea className="h-[calc(100vh-300px)] w-full p-4">
           <div className="space-y-2">
