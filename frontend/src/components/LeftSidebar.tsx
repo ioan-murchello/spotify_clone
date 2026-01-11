@@ -14,10 +14,10 @@ const LeftSidebar = () => {
 
   return (
     <aside className="h-full flex flex-col gap-3">
-      <div className="flex flex-col items-start gap-2">
+      <div className="flex flex-col items-start border-b border-zinc-800 ">
         <Link
           to="/"
-          className="flex w-full items-start p-4 rounded-xl justify-start hover:bg-zinc-900 "
+          className="flex w-full items-start p-4 rounded-xl justify-start hover:bg-zinc-900"
         >
           <HomeIcon className="size-5 mr-2" />
           <span className="hidden md:inline">Home</span>
@@ -25,7 +25,7 @@ const LeftSidebar = () => {
 
         <Link
           to="/chat"
-          className="flex w-full items-start p-4 rounded-xl   justify-start hover:bg-zinc-900"
+          className="flex w-full items-start p-4 rounded-xl justify-start hover:bg-zinc-900"
         >
           <MessageCircle className="size-5 mr-2" />
           <span className="hidden md:inline">Messages</span>

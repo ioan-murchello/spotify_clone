@@ -102,6 +102,7 @@ export const useMusicStore = create<MusicStore>((set) => {
                 if (!res.data) {
                     throw new Error('No songs found');
                 }
+              
                 set({ stats: res.data, isStatsLoading: false });
             } catch (error) {
                 console.log(error)

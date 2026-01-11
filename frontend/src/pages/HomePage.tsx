@@ -1,4 +1,3 @@
-import Topbar from "@/components/Topbar";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { useEffect } from "react";
 import FeaturedSection from "@/components/FeaturedSection";
@@ -35,13 +34,10 @@ const HomePage = () => {
       initializeQueue(allSongs);
     }
   }, [initializeQueue, madeForYouSongs, trendingSongs, featuredSongs]);
-
+// h-[calc(100vh-180px)]
   return (
-    <main className="rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900">
-      <div className="hidden md:block">
-        <Topbar />
-      </div>
-      <ScrollArea className="h-[calc(100vh-180px)]">
+    <main className="h-full rounded-md overflow-hidden bg-gradient-to-b from-zinc-800 to-zinc-900">
+      <ScrollArea className="h-full">
         <div className="p-4 sm:p-6">
           <h1 className="text-2xl sm:text-3xl font-bold mb-6">
             Good afternoon

@@ -4,28 +4,41 @@ import { User } from "../models/user.model.js";
 
 export const getStats = async (req, res, next) => {
   try {
-    const [totalSongs, totalAlbums, totalUsers, uniqueArtists] = await Promise.all([
-      Song.countDocuments(),
-      Album.countDocuments(),
-      User.countDocuments(),
+    const [totalSongs, totalAlbums, totalUsers, uniqueArtists] =
+      await Promise.all([
+        Song.countDocuments(),
+        Album.countDocuments(),
+        User.countDocuments(),
 
-      Song.aggregate([
-        {
-          $unionWith: {
-            coll: "albums",
-            pipeline: [],
+        Song.aggregate([
+          {
+            $unionWith: {
+              coll: "albums",
+              pipeline: [],
+            },
           },
-        },
-        {
-          $group: {
-            _id: "artist",
+          {
+            $project: {
+              // Convert artist name to lowercase to avoid case-sensitive duplicates
+              artist: { $toLower: "$artist" },
+            },
           },
-        },
-        {
-          $count: "count",
-        },
-      ]),
-    ]);
+          {
+            $group: {
+              _id: "$artist",
+            },
+          },
+          {
+            /* THIS STAGE IS THE FIX */
+            $match: {
+              _id: { $ne: null, $exists: true, $ne: "" },
+            },
+          },
+          {
+            $count: "count",
+          },
+        ]),
+      ]);
 
     res.status(200).json({
       totalAlbums,
@@ -36,4 +49,4 @@ export const getStats = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}; 

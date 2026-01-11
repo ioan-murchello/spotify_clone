@@ -49,7 +49,7 @@ const AlbumsTable = () => {
               </span>
             </TableCell>
             <TableCell>
-              <span className="inline-flex items-center gap-1 text-zinc-400">
+              <span className="inline-flex items-center flex-wrap gap-1 text-zinc-400">
                 <Music className="h-4 w-4" />
                 {album.songs.length} songs
               </span>
