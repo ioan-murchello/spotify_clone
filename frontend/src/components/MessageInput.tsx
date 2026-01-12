@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useChatStore } from "@/stores/useChatStore";
 import { useUser } from "@clerk/clerk-react";
 import { Send } from "lucide-react";
-import { useState, useRef } from "react"; // Added useRef
+import { useState, useRef } from "react"; 
 
 const MessageInput = () => {
   const [newMessage, setNewMessage] = useState("");
@@ -39,17 +39,17 @@ const MessageInput = () => {
     // 3. Set a new timer to stop the indicator after 1.5 seconds of no typing
     typingTimeoutRef.current = setTimeout(() => {
       stopTyping(selectedUser.clerkId, user.id);
-    }, 1500);
+    }, 2000);
   };
 
   return (
-    <div className="p-4 border-t border-zinc-800">
+    <div className="p-4">
       <div className="flex gap-2">
         <Input
           placeholder="Type a message"
           value={newMessage}
           onChange={handleInputChange} // Changed this
-          className="bg-zinc-800 border-none"
+          className="border-none bg-zinc-800 placeholder:text-zinc-500 placeholder:italic placeholder:text-sm focus-visible:ring-1 focus-visible:ring-emerald-500 text-sm"
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
 

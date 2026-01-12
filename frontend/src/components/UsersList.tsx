@@ -6,7 +6,7 @@ const UsersList = () => {
   const { users, selectedUser, isLoading, setSelectedUser, onlineUsers } =
     useChatStore();
 
-    // Helper to handle keyboard selection
+  // Helper to handle keyboard selection
   const handleKeyDown = (e: React.KeyboardEvent, user: iUser) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault(); // Prevent page scroll on Space
@@ -16,7 +16,7 @@ const UsersList = () => {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col items-center h-full overflow-y-auto px-2 py-4 gap-3">
+      <div className="flex flex-col items-center h-full overflow-y-auto px-2 py-4 gap-3 scrollbar-hide">
         {isLoading ? (
           <UsersListSkeleton />
         ) : (
@@ -24,13 +24,13 @@ const UsersList = () => {
             <div
               key={user._id}
               tabIndex={0}
-              onKeyDown={e => handleKeyDown(e, user)} // Trigger on Enter/Space
+              onKeyDown={(e) => handleKeyDown(e, user)} // Trigger on Enter/Space
               onClick={() => setSelectedUser(user)}
               className={`flex size-10 items-center justify-center
 										 cursor-pointer transition-colors p-2 rounded-full
                     ${
                       selectedUser?.clerkId === user.clerkId
-                        ? "bg-green-300"
+                        ? "bg-emerald-600"
                         : "hover:bg-zinc-500 bg-green-900"
                     }`}
             >
@@ -49,10 +49,6 @@ const UsersList = () => {
                         }`}
                 />
               </div>
-
-              {/* <div className="flex-1 min-w-0 hidden ">
-                <span className="font-medium truncate">{user.fullName}</span>
-              </div> */}
             </div>
           ))
         )}

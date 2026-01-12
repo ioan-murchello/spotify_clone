@@ -39,10 +39,10 @@ const ChatPage = () => {
 
     return () => clearTimeout(timer);
   }, [messages, typingUsers]);
- 
+
   return (
-    <main className="grid grid-cols-[60px_1fr] grid-rows-[auto_1fr_auto] h-full overflow-hidden">
-      <div className="row-span-2 border-r border-zinc-800 overflow-y-auto">
+    <main className="grid grid-cols-[60px_1fr] md:grid-cols-[100px_1fr] lg:grid-cols-[150px_1fr] grid-rows-[auto_1fr_auto] h-full overflow-hidden">
+      <div className="w-full row-span-2 overflow-y-auto">
         <UsersList />
       </div>
 
@@ -76,7 +76,7 @@ const ChatPage = () => {
                 />
               </Avatar>
               <div
-                className={`rounded-lg p-3 max-w-[70%] ${
+                className={`rounded-xl p-3 max-w-[70%] ${
                   message.senderId === user?.id ? "bg-gray-700" : "bg-zinc-800"
                 }`}
               >
@@ -88,14 +88,10 @@ const ChatPage = () => {
             </div>
           ))}
           {typingUsers?.has(selectedUser?.clerkId) && (
-            <div
-              className={`flex gap-2 items-center rounded-lg py-3 px-5 w-fit typing-dots ${
-                selectedUser._id === user?.id ? "bg-gray-700" : "bg-zinc-800"
-              }`}
-            >
-              <span></span>
-              <span></span>
-              <span></span>
+            <div className="bubble flex gap-1 items-center bg-zinc-800 text-zinc-400 px-4 py-3 rounded-2xl rounded-bl-none relative w-fit h-[40px]">
+              <span className="dot"></span>
+              <span className="dot"></span>
+              <span className="dot"></span>
             </div>
           )}
           <div ref={scrollRef} />
@@ -104,7 +100,7 @@ const ChatPage = () => {
 
       {/* 4. Input - Spans both columns at the bottom */}
       {selectedUser && (
-        <div className="col-start-2  shrink-0 border-t border-zinc-800 bg-zinc-950">
+        <div className="col-start-2  shrink-0 border-t ">
           <MessageInput />
         </div>
       )}
