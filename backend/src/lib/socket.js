@@ -13,7 +13,10 @@ import { Message } from "../models/message.model.js";
 export const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: [
+        "http://localhost:3000",
+        "https://spotify-clone-xlpm.onrender.com",
+      ],
       credentials: true,
     },
     // This allows clients to recover their state after a brief disconnect/restart
@@ -75,6 +78,10 @@ export const initializeSocket = (server) => {
         console.error("Message error:", error);
         socket.emit("message_error", error.message);
       }
+    });
+
+    socket.on("connect_error", (err) => {
+      console.error("Socket Connect Error:", err.message); // Це покаже, ЧОМУ онлайн-користувачі не працюють
     });
 
     // Inside initializeSocket

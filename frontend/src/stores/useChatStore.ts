@@ -29,7 +29,7 @@ interface ChatStore {
 }
 
 
-const baseUrl = import.meta.env.MODE === "development" ? 'http://localhost:5001' : '/api';
+const baseUrl = import.meta.env.MODE === "development" ? 'http://localhost:5001' : 'https://spotify-clone-xlpm.onrender.com';
 const socket = io(baseUrl, {
     autoConnect: false, // Disable automatic connection, only if user is authenticated
     withCredentials: true,

@@ -15,6 +15,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
       async (config) => {
         const token = await getToken(); // Clerk handles refreshing this automatically
+        console.log(
+          "Interceptor Token:",
+          token ? "Token acquired" : "NO TOKEN FOUND"
+        );
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -24,14 +28,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
     const initAuth = async () => {
       try {
-        const token = await getToken(); 
+        const token = await getToken();
 
         if (token) {
           await checkAdminStatus();
           // init socket
           if (userId) initSocket(userId);
         }
-      } catch (error: any) { 
+      } catch (error: any) {
         console.log("Error in auth provider", error);
       } finally {
         setLoading(false);
