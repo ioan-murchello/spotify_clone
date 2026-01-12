@@ -3,26 +3,52 @@ import { Input } from "@/components/ui/input";
 import { useChatStore } from "@/stores/useChatStore";
 import { useUser } from "@clerk/clerk-react";
 import { Send } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react"; // Added useRef
 
 const MessageInput = () => {
   const [newMessage, setNewMessage] = useState("");
   const { user } = useUser();
-  const { selectedUser, sendMessage } = useChatStore();
+  const { selectedUser, sendMessage, sendTyping, stopTyping } = useChatStore();
+
+  // Use a ref to keep track of the timer across re-renders
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleSend = () => {
     if (!selectedUser || !user || !newMessage) return;
     sendMessage(selectedUser.clerkId, user.id, newMessage.trim());
+
+    // Immediately stop typing indicator when message is sent
+    stopTyping(selectedUser.clerkId, user.id);
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
     setNewMessage("");
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNewMessage(value);
+
+    if (!selectedUser || !user) return;
+
+    // 1. Tell the server we are typing
+    sendTyping(selectedUser.clerkId, user.id);
+
+    // 2. Clear existing timer
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    // 3. Set a new timer to stop the indicator after 1.5 seconds of no typing
+    typingTimeoutRef.current = setTimeout(() => {
+      stopTyping(selectedUser.clerkId, user.id);
+    }, 1500);
+  };
+
   return (
-    <div className="p-4  border-t border-zinc-800">
+    <div className="p-4 border-t border-zinc-800">
       <div className="flex gap-2">
         <Input
           placeholder="Type a message"
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
+          onChange={handleInputChange} // Changed this
           className="bg-zinc-800 border-none"
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
@@ -38,4 +64,5 @@ const MessageInput = () => {
     </div>
   );
 };
+
 export default MessageInput;

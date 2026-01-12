@@ -1,16 +1,40 @@
 import { Server } from "socket.io";
 import { Message } from "../models/message.model.js";
 
+// export const initializeSocket = (server) => {
+
+//   const io = new Server(server, {
+//     cors: {
+//       origin: "http://localhost:3000",
+//       credentials: true,
+//     },
+//   });
+
 export const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
       origin: "http://localhost:3000",
       credentials: true,
     },
+    // This allows clients to recover their state after a brief disconnect/restart
+    connectionStateRecovery: {
+      maxDisconnectionDuration: 2 * 60 * 1000, // 2 minutes
+      skipMiddlewares: true,
+    },
+    transports: ["websocket", "polling"],
   });
 
   const userSockets = new Map(); // { userId: socketId}
   const userActivities = new Map(); // {userId: activity}
+
+  io.use((socket, next) => {
+    const userId = socket.handshake.auth.userId; // Pass this from frontend
+    if (!userId) {
+      return next(new Error("invalid userId"));
+    }
+    socket.userId = userId;
+    next();
+  });
 
   io.on("connection", (socket) => {
     socket.on("user_connected", (userId) => {
@@ -22,7 +46,7 @@ export const initializeSocket = (server) => {
 
       socket.emit("users_online", Array.from(userSockets.keys()));
 
-      io.emit("activities", Array.from(userActivities)); 
+      io.emit("activities", Array.from(userActivities));
     });
 
     socket.on("update_activity", ({ userId, activity }) => {
@@ -50,6 +74,23 @@ export const initializeSocket = (server) => {
       } catch (error) {
         console.error("Message error:", error);
         socket.emit("message_error", error.message);
+      }
+    });
+
+    // Inside initializeSocket
+    socket.on("typing", ({ senderId, receiverId }) => {
+      const receiverSocketId = userSockets.get(receiverId);
+      if (receiverSocketId) {
+        socket.to(receiverSocketId).emit("user_typing", { userId: senderId });
+      }
+    });
+
+    socket.on("stop_typing", ({ senderId, receiverId }) => {
+      const receiverSocketId = userSockets.get(receiverId);
+      if (receiverSocketId) {
+        socket
+          .to(receiverSocketId)
+          .emit("user_stopped_typing", { userId: senderId });
       }
     });
 

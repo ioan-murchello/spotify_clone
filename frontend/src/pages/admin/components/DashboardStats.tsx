@@ -3,8 +3,7 @@ import { useMusicStore } from "@/stores/useMusicStore";
 import { Library, ListMusic, PlayCircle, Users2 } from "lucide-react";
 
 const DashboardStats = () => {
-  const { stats } = useMusicStore();
-  console.log(stats, 'stats')
+  const { stats } = useMusicStore(); 
   const statsData = [
     {
       icon: ListMusic,

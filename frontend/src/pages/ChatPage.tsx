@@ -16,7 +16,8 @@ const formatTime = (date: string | number) => {
 
 const ChatPage = () => {
   const { user } = useUser();
-  const { messages, selectedUser, fetchUsers, fetchMessages } = useChatStore();
+  const { messages, selectedUser, fetchUsers, fetchMessages, typingUsers } =
+    useChatStore();
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -28,14 +29,19 @@ const ChatPage = () => {
   }, [selectedUser, fetchMessages]);
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({
-      behavior: "auto",
-      block: "end",
-    });
-  }, [messages]);
+    // Use a small timeout to ensure the DOM has rendered the typing bubble
+    const timer = setTimeout(() => {
+      scrollRef.current?.scrollIntoView({
+        behavior: "auto", // "smooth" feels more like a chat app
+        block: "end",
+      });
+    }, 50);
 
+    return () => clearTimeout(timer);
+  }, [messages, typingUsers]);
+ 
   return (
-    <main className="grid grid-cols-[80px_1fr] grid-rows-[auto_1fr_auto] h-full overflow-hidden">
+    <main className="grid grid-cols-[60px_1fr] grid-rows-[auto_1fr_auto] h-full overflow-hidden">
       <div className="row-span-2 border-r border-zinc-800 overflow-y-auto">
         <UsersList />
       </div>
@@ -71,16 +77,27 @@ const ChatPage = () => {
               </Avatar>
               <div
                 className={`rounded-lg p-3 max-w-[70%] ${
-                  message.senderId === user?.id ? "bg-green-500" : "bg-zinc-800"
+                  message.senderId === user?.id ? "bg-gray-700" : "bg-zinc-800"
                 }`}
               >
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm break-all">{message.content}</p>
                 <span className="text-xs text-zinc-300 mt-1 block">
                   {formatTime(message.createdAt ?? 0)}
                 </span>
               </div>
             </div>
           ))}
+          {typingUsers?.has(selectedUser?.clerkId) && (
+            <div
+              className={`flex gap-2 items-center rounded-lg py-3 px-5 w-fit typing-dots ${
+                selectedUser._id === user?.id ? "bg-gray-700" : "bg-zinc-800"
+              }`}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          )}
           <div ref={scrollRef} />
         </div>
       )}
@@ -98,7 +115,11 @@ export default ChatPage;
 
 const NoConversationPlaceholder = () => (
   <div className="flex flex-col items-center justify-center h-[80%]">
-    <img src="/spotify.png" alt="Spotify" className="size-12 sm:size-16 animate-bounce" />
+    <img
+      src="/spotify.png"
+      alt="Spotify"
+      className="size-12 sm:size-16 animate-bounce"
+    />
     <div className="text-center">
       <h3 className="text-zinc-300 text-md md:text-lg font-medium mb-1">
         No conversation selected

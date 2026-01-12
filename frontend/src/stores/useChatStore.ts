@@ -15,6 +15,10 @@ interface ChatStore {
     messages: iMessages[];
     selectedUser: iUser | null;
 
+    typingUsers: Set<string | undefined>; // Track multiple people typing
+    sendTyping: (receiverId: string, senderId: string) => void;
+    stopTyping: (receiverId: string, senderId: string) => void;
+
     fetchUsers: () => Promise<void>,
     initSocket: (userId: string) => void,
     disconnectSocket: () => void,
@@ -29,6 +33,10 @@ const baseUrl = import.meta.env.MODE === "development" ? 'http://localhost:5001'
 const socket = io(baseUrl, {
     autoConnect: false, // Disable automatic connection, only if user is authenticated
     withCredentials: true,
+    transports: ["websocket", "polling"],
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
 });
 
 export const useChatStore = create<ChatStore>((set, get) => {
@@ -42,52 +50,89 @@ export const useChatStore = create<ChatStore>((set, get) => {
         userActivities: new Map<string, string>(),
         messages: [],
         selectedUser: null,
+        typingUsers: new Set<string>(),
 
         initSocket: async (userId: string) => {
+            // Only initialize if we aren't already connected
             if (!get().isConnected) {
                 socket.auth = { userId };
-                socket.connect();
-                socket.emit('user_connected', userId);
+
+                // --- CONNECTION HANDLERS ---
+                socket.on('connect', () => {
+                    socket.emit('user_connected', userId);
+                    set({ isConnected: true });
+                });
+
+                socket.on("connect_error", (err) => {
+                    if (err.message === "Session ID unknown") {
+                        console.warn("Session expired, reconnecting...");
+                        socket.connect();
+                    }
+                });
+
+                // --- REAL-TIME DATA LISTENERS (Crucial for UI updates) ---
+
+                // Listen for when a message is sent to YOU
+                socket.on('receive_message', (message: iMessages) => {
+                    set((state) => ({ messages: [...state.messages, message] }));
+                });
+
+                // Listen for confirmation that YOUR message was sent successfully
+                socket.on('message_sent', (message: iMessages) => {
+                    set((state) => ({ messages: [...state.messages, message] }));
+                });
 
                 socket.on('users_online', (users: string[]) => {
-                    set({ onlineUsers: new Set(users) })
-                })
+                    set({ onlineUsers: new Set(users) });
+                });
 
-                socket.on('activities', (activities: [string, string][]) => {
-                    set({ userActivities: new Map(activities) })
-                })
+                socket.on('user_connected', (uId: string) => {
+                    set((state) => ({ onlineUsers: new Set([...state.onlineUsers, uId]) }));
+                });
 
-                socket.on('user_connected', (userId: string) => {
-                    set((state) => ({ onlineUsers: new Set([...state.onlineUsers, userId]) }))
-                })
-
-                socket.on('user_disconnected', (userId: string) => {
+                socket.on('user_disconnected', (uId: string) => {
                     set((state) => {
                         const updatedOnlineUsers = new Set(state.onlineUsers);
-                        updatedOnlineUsers.delete(userId);
+                        updatedOnlineUsers.delete(uId);
                         return { onlineUsers: updatedOnlineUsers };
-                    })
-                })
+                    });
+                });
 
-                socket.on('receive_message', (message: iMessages) => {
-                    set((state) => ({ messages: [...state.messages, message] }))
-                })
+                socket.on('activities', (activities: [string, string][]) => {
+                    set({ userActivities: new Map(activities) });
+                });
 
-                socket.on('message_sent', (message: iMessages) => {
-                    set((state) => ({ messages: [...state.messages, message] }))
-                })
-
-                socket.on('activity_updated', ({ userId, activity }) => {
+                socket.on('activity_updated', ({ userId: uId, activity }) => {
                     set((state) => {
                         const updatedActivities = new Map(state.userActivities);
-                        updatedActivities.set(userId, activity);
+                        updatedActivities.set(uId, activity);
                         return { userActivities: updatedActivities };
-                    })
-                })
+                    });
+                });
 
-                set({ isConnected: true, socket });
+                socket.on('user_typing', ({ userId }) => {
+                    set((state) => ({ typingUsers: new Set(state.typingUsers).add(userId) }));
+                });
 
+                socket.on('user_stopped_typing', ({ userId }) => {
+                    set((state) => {
+                        const updated = new Set(state.typingUsers);
+                        updated.delete(userId);
+                        return { typingUsers: updated };
+                    });
+                });
+
+                // Trigger the connection
+                socket.connect();
             }
+        },
+
+        sendTyping: (receiverId, senderId) => {
+            socket.emit('typing', { receiverId, senderId });
+        },
+
+        stopTyping: (receiverId, senderId) => {
+            socket.emit('stop_typing', { receiverId, senderId });
         },
 
         sendMessage: (receiverId, senderId, content) => {
@@ -111,6 +156,7 @@ export const useChatStore = create<ChatStore>((set, get) => {
 
         disconnectSocket: () => {
             if (get().isConnected) {
+                socket.removeAllListeners(); // Clean up listeners
                 socket.disconnect();
                 set({ isConnected: false });
             }
