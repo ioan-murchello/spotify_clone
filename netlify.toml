@@ -1,0 +1,7 @@
+[build]
+  # Команда спочатку встановлює ВСЕ (включаючи tsc), а потім запускає білд
+  command = "npm install --prefix backend && npm install --include=dev --prefix frontend && npm run build --prefix frontend"
+  publish = "frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "20" # Переконайся, що версія Node актуальна
