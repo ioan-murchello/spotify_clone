@@ -23,7 +23,7 @@ const MainLayout = () => {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
+    <div className="h-dvh flex flex-col bg-black text-white overflow-hidden">
       {isMobile ? (
         <MobileMainLayout />
       ) : (

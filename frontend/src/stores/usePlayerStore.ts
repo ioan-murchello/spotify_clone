@@ -33,15 +33,14 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     isRepeating: false,
     isPlayRandom: false,
 
-
-
     setAudio: (audio) => set({ audio }),
 
-
     initializeQueue: (songs: iSong[]) => {
+        const { currentSong } = get();
+
         set({
             queue: songs,
-            currentSong: get().currentSong || songs[0],
+            currentSong: currentSong || songs[0],
             currentIndex: get().currentIndex === -1 ? 0 : get().currentIndex,
         });
     },
@@ -88,9 +87,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         set({ isRepeating: !isRepeating });
     },
 
-
-
-
     togglePlay: () => {
         const willStartPlaying = !get().isPlaying;
         const currentSong = get().currentSong;
@@ -103,39 +99,36 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         set({ isPlaying: willStartPlaying });
     },
 
-
     playNext: () => {
-        const { currentIndex, queue, isPlayRandom } = get();
-
+        const { currentIndex, queue, isPlayRandom } = get(); 
         if (queue.length === 0) return;
 
         let nextIndex: number;
 
-        if (isPlayRandom) {
-            // pick a random index different from current
-            if (queue.length === 1) return;
-
+        if (isPlayRandom && queue.length > 1) {
+            // Логіка випадкового вибору
             do {
                 nextIndex = Math.floor(Math.random() * queue.length);
             } while (nextIndex === currentIndex);
+        } else {
+            // Звичайна послідовна логіка
+            nextIndex = currentIndex + 1;
         }
-        // normal sequential play
-        if (currentIndex >= queue.length - 1) {
+
+        // Перевіряємо, чи ми не вийшли за межі черги
+        if (nextIndex < queue.length && nextIndex >= 0) {
+            const nextSong = queue[nextIndex];
+
+            set({
+                currentIndex: nextIndex,
+                currentSong: nextSong,
+                isPlaying: true,
+            });
+        } else {
+            // Якщо це була остання пісня — зупиняємо
             set({ isPlaying: false });
-            return;
         }
-        nextIndex = currentIndex + 1;
-
-
-        const nextSong = queue[nextIndex];
-
-        set({
-            currentIndex: nextIndex,
-            currentSong: nextSong,
-            isPlaying: true,
-        });
     },
-
 
     playPrevious: () => {
         const { queue, currentIndex, isPlayRandom } = get();
@@ -144,24 +137,27 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
         let prevIndex: number;
 
-        if (isPlayRandom) {
-            // random previous (different index)
-            if (queue.length === 1) return;
-
+        if (isPlayRandom && queue.length > 1) {
+            // Випадковий попередній
             do {
                 prevIndex = Math.floor(Math.random() * queue.length);
             } while (prevIndex === currentIndex);
+        } else {
+            // Звичайний перехід назад
+            prevIndex = currentIndex - 1;
         }
-        // sequential previous
-        if (currentIndex <= 0) {
+
+        // Якщо ми намагаємося піти далі першої пісні в звичайному режимі
+        if (prevIndex < 0) {
+            // У Spotify зазвичай пісня просто починається спочатку, 
+            // або плеєр зупиняється, якщо це початок списку.
             set({ isPlaying: false });
             return;
         }
-        prevIndex = currentIndex - 1;
-
 
         const prevSong = queue[prevIndex];
 
+        // Оновлення активності через сокети
         const socket = useChatStore.getState().socket;
         if (socket.auth) {
             socket.emit("update_activity", {
@@ -176,9 +172,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
             isPlaying: true,
         });
     },
-
-
-
 
     toggleRandomPlay: () => {
         const { isPlayRandom, queue, currentSong, currentIndex } = get();
@@ -200,9 +193,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
             });
         }
     },
-
-
-
 
 }))
 

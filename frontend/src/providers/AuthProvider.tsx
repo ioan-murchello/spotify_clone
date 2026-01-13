@@ -15,10 +15,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
       async (config) => {
         const token = await getToken(); // Clerk handles refreshing this automatically
-        console.log(
-          "Interceptor Token:",
-          token ? "Token acquired" : "NO TOKEN FOUND"
-        );
+
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }

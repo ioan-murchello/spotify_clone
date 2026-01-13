@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useChatStore } from "@/stores/useChatStore";
 import type { iUser } from "@/types";
 const UsersList = () => {
-  const { users, selectedUser, isLoading, setSelectedUser, onlineUsers } =
+  const { users, selectedUser, isUsersLoaging, setSelectedUser, onlineUsers } =
     useChatStore();
 
   // Helper to handle keyboard selection
@@ -17,7 +17,7 @@ const UsersList = () => {
   return (
     <div className="w-full">
       <div className="flex flex-col items-center h-full overflow-y-auto px-2 py-4 gap-3 scrollbar-hide">
-        {isLoading ? (
+        {isUsersLoaging ? (
           <UsersListSkeleton />
         ) : (
           users.map((user: iUser) => (

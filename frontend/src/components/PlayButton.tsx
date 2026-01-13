@@ -4,7 +4,7 @@ import type { iSong } from "@/types";
 import { Pause, Play } from "lucide-react";
 
 const PlayButton = ({ song }: { song: iSong }) => {
-  const { currentSong, isPlaying, setCurrentSong, togglePlay } =
+  const { currentSong, isPlaying, togglePlay, setCurrentSong } =
     usePlayerStore();
   const isCurrentSong = currentSong?._id === song._id;
 

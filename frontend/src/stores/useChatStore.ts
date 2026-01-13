@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 interface ChatStore {
     users: iUser[],
     isLoading: boolean,
+    isUsersLoaging: boolean,
     error: string | null;
     socket: any;
     isConnected: boolean;
@@ -43,6 +44,7 @@ export const useChatStore = create<ChatStore>((set, get) => {
     return {
         users: [],
         isLoading: false,
+        isUsersLoaging: false,
         error: null,
         socket: socket,
         isConnected: false,
@@ -163,7 +165,7 @@ export const useChatStore = create<ChatStore>((set, get) => {
         },
 
         fetchUsers: async () => {
-            set({ isLoading: true, error: null })
+            set({ isUsersLoaging: true, error: null })
             try {
                 const res = await axiosInstance.get('/users');
 
@@ -172,7 +174,7 @@ export const useChatStore = create<ChatStore>((set, get) => {
                 console.log(error)
                 set({ error: error?.response?.data?.message || 'Failed to fetch users' })
             } finally {
-                set({ isLoading: false })
+                set({ isUsersLoaging: false })
             }
         },
 
