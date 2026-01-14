@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-     "build": "npx install --prefix backend && npx install --prefix frontend && npx run build --prefix frontend",
-     "start": "npx start --prefix backend"
+     "build": "npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",

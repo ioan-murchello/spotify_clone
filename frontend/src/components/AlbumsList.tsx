@@ -6,6 +6,10 @@ const AlbumsList = () => {
   const { albumId: activeAlbumId } = useParams();
   const { albums } = useMusicStore();
 
+  if (!Array.isArray(albums)) {
+    return <p>No albums available</p>;
+  }
+
   return (
     <div className="mb-3">
       <div className="flex items-center justify-start p-2 mx-4">
