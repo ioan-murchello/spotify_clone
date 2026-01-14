@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/express";
 
 export const protectRoute = async (req, res, next) => {
-  console.log("Auth object:", req.auth); // Подивись, що тут приходить в логах Render
+   
   const { userId } = req.auth();
   if (!userId) {
     return res
