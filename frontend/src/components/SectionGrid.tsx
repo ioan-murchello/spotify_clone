@@ -1,6 +1,7 @@
 import type { iSong } from "../types";
 import { Button } from "@/components/ui/button";
 import PlayButton from "./PlayButton";
+import FeaturedSectionSkeleton from "./skeletons/FeaturedSectionSkeleton";
 
 type SectionGridProps = {
   title: string;
@@ -8,7 +9,7 @@ type SectionGridProps = {
   isLoading: boolean;
 };
 const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <FeaturedSectionSkeleton length={songs.length} />;
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">

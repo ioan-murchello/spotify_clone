@@ -18,6 +18,7 @@ interface MusicStore {
     trendingSongs: iSong[];
     featuredSongs: iSong[];
     stats: iStats;
+    
     fetchAlbums: () => Promise<void>,
     fetchAlbumById: (albumId: string) => Promise<void>,
     fetchFeaturedSongs: () => Promise<iSong[]>,
@@ -76,7 +77,7 @@ export const useMusicStore = create<MusicStore>((set) => {
                 toast.success('Song deleted')
             } catch (error) {
                 console.log(error, 'error in deleteSong handler in zustand')
-                toast.error('Error deleting song...')
+                toast.error('Error deleting song...',{id: 'delete-song-error'})
             } finally {
                 set({ isSongsLoading: false })
             }

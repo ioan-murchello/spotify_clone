@@ -36,8 +36,8 @@ const socket = io(baseUrl, {
     withCredentials: true,
     transports: ["websocket", "polling"],
     reconnection: true,
-    reconnectionAttempts: Infinity,
-    reconnectionDelay: 1000,
+    reconnectionAttempts: 20,
+    reconnectionDelay: 3000,
 });
 
 export const useChatStore = create<ChatStore>((set, get) => {

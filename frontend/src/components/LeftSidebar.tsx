@@ -4,8 +4,10 @@ import PlaylistSkeleton from "./skeletons/PlaylistSkeleton";
 import { ScrollArea } from "./ui/scroll-area";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { useEffect } from "react";
+import { useUser } from "@clerk/clerk-react";
 
 const LeftSidebar = () => {
+  const { isSignedIn } = useUser();
   const { albums, isLoading, fetchAlbums } = useMusicStore();
 
   useEffect(() => {
@@ -23,13 +25,15 @@ const LeftSidebar = () => {
           <span className="hidden md:inline">Home</span>
         </Link>
 
-        <Link
-          to="/chat"
-          className="flex w-full items-start p-4 rounded-xl justify-start hover:bg-zinc-900"
-        >
-          <MessageCircle className="size-5 mr-2" />
-          <span className="hidden md:inline">Messages</span>
-        </Link>
+        {isSignedIn && (
+          <Link
+            to="/chat"
+            className="flex w-full items-start p-4 rounded-xl justify-start hover:bg-zinc-900"
+          >
+            <MessageCircle className="size-5 mr-2" />
+            <span className="hidden md:inline">Messages</span>
+          </Link>
+        )}
       </div>
 
       {/* music library */}
@@ -57,7 +61,9 @@ const LeftSidebar = () => {
                     />
                     <div className="flex-1 min-w-0 hidden md:block">
                       <p className="font-medium truncate ">{album.title}</p>
-                      <p className="font-sm truncate text-zinc-500">Album {album.artist}</p>
+                      <p className="font-sm truncate text-zinc-500">
+                        Album {album.artist}
+                      </p>
                     </div>
                   </Link>
                 );

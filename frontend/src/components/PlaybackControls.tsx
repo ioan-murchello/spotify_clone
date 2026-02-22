@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { usePlayerStore } from "@/stores/usePlayerStore";
-import { 
+import {
   Pause,
   Play,
   Repeat,
@@ -34,7 +34,7 @@ const PlaybackControls = () => {
     isPlayRandom,
   } = usePlayerStore();
 
-  const [volume, setVolume] = useState(75);
+  const [volume, setVolume] = useState(50);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);

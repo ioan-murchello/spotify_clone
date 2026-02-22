@@ -9,8 +9,8 @@ interface FeaturedSectionProps {
 
 const FeaturedSection = ({ songs }: FeaturedSectionProps) => {
   const { isLoading } = useMusicStore();
- 
-  if (isLoading) return <FeaturedGridSkeleton />;
+
+  if (isLoading) return <FeaturedGridSkeleton length={songs.length} />;
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2  gap-4 mb-8">
       {songs?.map((song) => {
