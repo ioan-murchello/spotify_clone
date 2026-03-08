@@ -1,11 +1,11 @@
 import { useMusicStore } from "@/stores/useMusicStore";
-import { useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import FeaturedSection from "@/components/FeaturedSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SectionGrid from "@/components/SectionGrid";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 
-const HomePage = () => {
+const HomePage = memo(() => {
   const { fetchSongs, songs, isLoading } = useMusicStore();
   const { initializeQueue } = usePlayerStore();
 
@@ -49,5 +49,5 @@ const trendingSongs = useMemo(() => songs.slice(8), [songs]); // 8 ... end
       </ScrollArea>
     </main>
   );
-};
+});
 export default HomePage;

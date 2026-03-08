@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/table";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { Calendar, Music, Trash2 } from "lucide-react";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 
-const AlbumsTable = () => {
+const AlbumsTable = memo(() => {
   const { albums, deleteAlbum, fetchAlbums } = useMusicStore();
 
   useEffect(() => {
@@ -71,5 +71,5 @@ const AlbumsTable = () => {
       </TableBody>
     </Table>
   );
-};
+});
 export default AlbumsTable;

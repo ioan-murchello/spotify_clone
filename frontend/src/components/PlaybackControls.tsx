@@ -37,6 +37,7 @@ const PlaybackControls = () => {
   const [volume, setVolume] = useState(50);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {

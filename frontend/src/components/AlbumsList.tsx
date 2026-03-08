@@ -1,8 +1,9 @@
 import { Library } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useMusicStore } from "@/stores/useMusicStore"; 
+import { memo } from "react";
 
-const AlbumsList = () => {
+const AlbumsList = memo(() => {
   const { albumId: activeAlbumId } = useParams();
   const { albums } = useMusicStore();
 
@@ -24,7 +25,6 @@ const AlbumsList = () => {
               <Link
                 key={album._id}
                 to={`/albums/${album._id}`}
-                // className={`flex gap-3 items-center group rounded-md p-2 hover:bg-zinc-800 cursor-pointer mt-2`}
                 className={`flex gap-3 items-center group rounded-md px-2 py-2 mt-2 hover:bg-zinc-700/50 transition-colors cursor-pointer ${
                   isActive ? "bg-green-700 shadow-sm" : ""
                 }`}
@@ -47,5 +47,5 @@ const AlbumsList = () => {
       </div>
     </div>
   );
-};
+});
 export default AlbumsList;

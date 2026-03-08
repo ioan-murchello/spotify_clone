@@ -2,13 +2,14 @@ import type { iSong } from "../types";
 import { Button } from "@/components/ui/button";
 import PlayButton from "./PlayButton";
 import FeaturedSectionSkeleton from "./skeletons/FeaturedSectionSkeleton";
+import { memo } from "react";
 
 type SectionGridProps = {
   title: string;
   songs: iSong[];
   isLoading: boolean;
 };
-const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
+const SectionGrid = memo(({ songs, title, isLoading }: SectionGridProps) => {
   if (isLoading) return <FeaturedSectionSkeleton length={songs.length} />;
   return (
     <div className="mb-8">
@@ -48,5 +49,5 @@ const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
       </div>
     </div>
   );
-};
+});
 export default SectionGrid;

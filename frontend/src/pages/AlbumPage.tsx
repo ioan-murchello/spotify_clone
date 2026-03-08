@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useMusicStore } from "../stores/useMusicStore.ts";
 import { Clock, Pause, Play } from "lucide-react";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { usePlayerStore } from "@/stores/usePlayerStore.ts";
 
@@ -11,7 +11,7 @@ const formatDuration = (seconds: number) => {
   return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
 };
  
-const AlbumPage = () => {
+const AlbumPage = memo(() => {
   const { albumId } = useParams();
   const { fetchAlbumById, currentAlbum } = useMusicStore();
   const { isPlaying, currentSong, playAlbum, togglePlay } = usePlayerStore();
@@ -164,28 +164,8 @@ const AlbumPage = () => {
       </div>
     </div>
   );
-};
+});
 
 export default AlbumPage;
 
-// return (
-//   <div className="h-full w-full flex flex-col overflow-hidden bg-zinc-900">
-//     <div className="flex-1 overflow-y-auto overflow-x-hidden relative scrollbar-hide">
-//       <div className="relative min-h-full pb-32"> {/* Increased to pb-32 */}
-//         <div className="absolute inset-0 bg-gradient-to-b ..." />
-
-//         <div className="relative z-10">
-//           <div className="flex flex-col ..."> {/* Header */} </div>
-//           <div className="px-6 pb-4 ..."> {/* Play Button */} </div>
-
-//           <div className="bg-black/20 ..."> {/* Table Wrapper */}
-//             <div className="hidden sm:grid grid-cols-..."> {/* Header - Hidden on mobile */} </div>
-//             <div className="bg-black/30 ..."> {/* Songs List */}
-//               {/* .map logic */}
-//             </div>
-//           </div>
-//         </div> {/* End z-10 */}
-//       </div> {/* End min-h-full */}
-//     </div> {/* End Scroller */}
-//   </div> /* End Main Container */
-// );
+ 

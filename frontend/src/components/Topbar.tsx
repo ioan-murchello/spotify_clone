@@ -1,4 +1,4 @@
-import { SignedOut, UserButton } from "@clerk/clerk-react";
+import { SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { LayoutDashboardIcon, MessageCircle } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import SignInOAuthButtons from "./SignInOAuthButtons";
@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 
 const Topbar = () => {
+  const { user } = useUser(); 
   const { isAdmin } = useAuthStore();
   const currentLocation = useLocation();
   const path = currentLocation.pathname.includes("chat");
+  
   return (
     <div
       className="flex items-center justify-between p-2 sm:p-4 bg-zinc-900/75 
@@ -19,13 +21,15 @@ const Topbar = () => {
       <Link to={"/"} className="flex gap-2 items-center">
         <img src="/spotify.png" className="size-8" alt="Spotify logo" />
       </Link>
-      <div className="flex  md:hidden lg:hidden justify-center items-center gap-4 p-4 ">
-        <Link to="/chat">
-          <MessageCircle
-            className={`size-6 ${path === true ? "text-green-500" : ""}`}
-          />
-        </Link>
-      </div>
+      {user && (
+        <div className="flex  md:hidden lg:hidden justify-center items-center gap-4 p-4 ">
+          <Link to="/chat">
+            <MessageCircle
+              className={`size-6 ${path === true ? "text-green-500" : ""}`}
+            />
+          </Link>
+        </div>
+      )}
       <div className="flex items-center justify-center gap-4">
         {isAdmin && (
           <Link
